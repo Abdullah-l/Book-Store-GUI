@@ -26,11 +26,15 @@ def exerciseI
   end
 end
 exerciseI
+puts
+
 # II. Gets all employee IDs ex:[10,21,113,...]
 def exerciseII
   puts Employees.keys
 end
 exerciseII
+puts
+
 # III. Gets employees with the highest salary in an array along their ID
 # ex::[{name:”Mahmoud”,salary:5000,id:113},{name:”Sara”,salary:5000,id:64},...]
 def exerciseIII
@@ -54,6 +58,8 @@ def exerciseIII
   p highestSalariesArr
 end
 exerciseIII
+puts
+
 # IV. Gets employees with lowest salary in a hash keeping their IDs
 # Ex:{
 # 10:{name:”Ahmed”,salary:1000},
@@ -77,6 +83,7 @@ def exerciseIV
   p lowestSalaries
 end
 exerciseIV
+puts
 
 # V. Gets average salaries
 def exerciseV
@@ -93,6 +100,7 @@ def exerciseV
   p avgSalaries.round(3)
 end
 exerciseV
+puts
 
 # VI. Remove employees with nil salary.
 def exerciseVI
@@ -100,9 +108,11 @@ def exerciseVI
   Employees.each do |key, value|
     employeesCopy.delete(key) if value['salary'].nil?
   end
-  # p employeesCopy
+  p employeesCopy
 end
 exerciseVI
+puts
+
 # VII. Gets hash a new hash with uniq employees (remove duplicate)
 def exerciseVII
   employeesCopy = Employees.clone
@@ -115,9 +125,10 @@ def exerciseVII
       employeesCopy.delete(key)
     end
   end
-  # p employeesCopy
+  p employeesCopy
 end
 exerciseVII
+puts
 
 # B. Write a Ruby program to find most occurred item in a given array along the elements
 # frequency:
