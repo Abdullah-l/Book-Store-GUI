@@ -1,11 +1,12 @@
 # Book Store - A Ruby GUI Project
 
 Main Menu:
+
 ![Pic 1](https://github.com/cupOJ/Week-2/raw/main/Book_Store/gui1.png)
 
 
-
 Example of adding a StoreItem:
+
 ![Pic 2](https://github.com/cupOJ/Week-2/raw/main/Book_Store/gui2.png)
 
 
