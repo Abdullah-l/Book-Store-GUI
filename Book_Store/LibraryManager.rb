@@ -14,7 +14,7 @@ Shoes.app do
     @b6 = button 'Delete an item'
 
 
-    @p3.style stroke: red
-    @line.stroke = red 
+    # @p3.style stroke: red
+    # @line.stroke = red 
   end
 end
