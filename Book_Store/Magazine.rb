@@ -1,7 +1,8 @@
 require './StoreItem'
+require 'csv'
+require 'date'
 class Magazine < StoreItem
-
-    attr_accessor :title, :price, :publisherAgent, :date
+  attr_accessor :title, :price, :publisherAgent, :date
 
   def initialize(title, price, publisherAgent, date)
     super(title, price)
@@ -16,8 +17,12 @@ class Magazine < StoreItem
     return 'Missing magazine info, check your inputs' if parsedLine.count < 4
     # error checking
     # price = Float, date check
-    if Float(parsedLine[1], exception: false).nil? 
-      return 'Invalid magazine info, check your inputs'
+    return 'Invalid magazine price, check your inputs' if Float(parsedLine[1], exception: false).nil?
+
+    begin
+      date = Date.strptime(parsedLine[3], '%d-%m-%Y')
+    rescue StandardError
+      return 'Invalid magazine date, check your inputs'
     end
 
     # return magazine item
@@ -27,7 +32,7 @@ class Magazine < StoreItem
   # Gets all current items in Magazine.txt
   # Returns an array of Magazine Objects
   def writeMagazineStore
-    magazinesStr = "#{@title}, #{@price}, #{@publisherAgent}, #{@date}}\n"
+    magazinesStr = "#{@title},#{@price},#{@publisherAgent},#{@date}\n"
     File.write('Magazine.txt', magazinesStr, mode: 'a')
     'success'
   end
@@ -41,9 +46,15 @@ class Magazine < StoreItem
 
       parsedLine = CSV.parse_line(line)
       # error checking
-      # price = Float, check date
-      if Float(parsedLine[1], exception: false).nil? 
+      # price = Float
+      if Float(parsedLine[1], exception: false).nil?
         next # skip
+      end
+
+      begin
+        date = Date.strptime(parsedLine[3], '%d-%m-%Y')
+      rescue StandardError
+        return 'Invalid magazine date, check your inputs'
       end
 
       # add Magazine object to magazines array
@@ -56,49 +67,47 @@ class Magazine < StoreItem
   def self.getItems
     magazinesStr = "title, price, publisher-agent, date\n"
     Magazine.readItemStore.each do |magazine|
-      magazinesStr += "#{magazine.title}, #{magazine.price}, #{magazine.publisherAgent}, #{magazine.date}\n"
+      magazinesStr += "#{magazine.title},#{magazine.price},#{magazine.publisherAgent},#{magazine.date}\n"
     end
     magazinesStr
   end
 
-  # Returns most expensive magazines as a string
-#   def self.getHighestPricedMagazines
-#     magazinesStr = "title, price, publisher-agent, date\n"
-#     highestPrice = 0
-#     highestPricedMagazines = []
-#     Magazine.readItemStore.each do |magazine|
-#       if magazine.price > highestPrice
-#         highestPrice = magazine.price
-#         highestPricedMagazines = []
-#         highestPricedMagazines.push(magazine)
-#       elsif magazine.price == highestPrice
-#         highestPricedMagazines.push(magazine)
-#       end
-#     end
-#     highestPricedMagazines.each do |magazine|
-#       magazinesStr += "#{magazine.title}, #{magazine.price}, #{magazine.authorName}, #{magazine.numberOfPages}, #{magazine.isbn}\n"
-#     end
-#     magazinesStr
-#   end
+  # Returns all magazines that are published within the given date
+  def self.getMagazineByDate(dateStr)
+    begin
+      Date.strptime(dateStr, '%d-%m-%Y')
+    rescue StandardError
+      return 'Invalid magazine date, check your inputs'
+    end
+    magazinesStr = "title, price, publisher-agent, date\n"
+    magazines = []
 
-  # Returns magazines within a certain price range as a string
-#   def self.getItemsWithinRange(lowerPrice, upperPrice)
-#     # Error Checking
-#     return 'Invalid input' if Float(lowerPrice, exception: false).nil? || Float(upperPrice, exception: false).nil?
+    Magazine.readItemStore.each do |magazine|
+      magazines.push(magazine) if magazine.date == dateStr
+    end
+    magazines.each do |magazine|
+      magazinesStr += "#{magazine.title},#{magazine.price},#{magazine.publisherAgent},#{magazine.date}\n"
+    end
+    return 'No magazine was found' if magazines.count == 0
 
-#     lowerPrice = lowerPrice.to_f
-#     upperPrice = upperPrice.to_f
+    magazinesStr
+  end
 
-#     return 'Invalid price range' if lowerPrice >= upperPrice
+  # Returns all magazines that are published by the given publisher name
+  def self.getMagazineByPublisher(publisherStr)
+    magazinesStr = "title, price, publisher-agent, date\n"
+    magazines = []
 
-#     magazinesStr = "title, price, author name, number of pages, isbn\n"
-#     Magazine.readItemStore.each do |magazine|
-#       if magazine.price >= lowerPrice && magazine.price <= upperPrice
-#         magazinesStr += "#{magazine.title}, #{magazine.price}, #{magazine.authorName}, #{magazine.numberOfPages}, #{magazine.isbn}\n"
-#       end
-#     end
-#     magazinesStr
-#   end
+    Magazine.readItemStore.each do |magazine|
+      magazines.push(magazine) if magazine.publisherAgent == publisherStr
+    end
+    magazines.each do |magazine|
+      magazinesStr += "#{magazine.title},#{magazine.price},#{magazine.publisherAgent},#{magazine.date}\n"
+    end
+    return 'No magazine was found' if magazines.count == 0
+
+    magazinesStr
+  end
 
   def self.deleteItem(title)
     foundItem = false
@@ -118,11 +127,8 @@ class Magazine < StoreItem
       magazines.each do |magazine|
         magazine.writeMagazineStore
       end
-      return 'Item deleted'
+      return "Magazine \"#{title}\" successfully deleted"
     end
     false
   end
 end
-
-# item1 = Magazine.new("Ruby Cookmagazine",100.3,"Lucas Carlson",400 ,"9780596523695")
-# p Magazine.superclass

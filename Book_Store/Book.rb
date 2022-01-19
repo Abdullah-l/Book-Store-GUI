@@ -30,7 +30,7 @@ class Book < StoreItem
   # Gets all current items in Book.txt
   # Returns an array of Book Objects
   def writeBookStore
-    booksStr = "#{@title}, #{@price}, #{@authorName}, #{@numberOfPages}, #{@isbn}\n"
+    booksStr = "#{@title},#{@price},#{@authorName},#{@numberOfPages},#{@isbn}\n"
     File.write('Book.txt', booksStr, mode: 'a')
     'success'
   end
@@ -61,7 +61,7 @@ class Book < StoreItem
   def self.getItems
     booksStr = "title, price, author name, number of pages, isbn\n"
     Book.readItemStore.each do |book|
-      booksStr += "#{book.title}, #{book.price}, #{book.authorName}, #{book.numberOfPages}, #{book.isbn}\n"
+      booksStr += "#{book.title},#{book.price},#{book.authorName},#{book.numberOfPages},#{book.isbn}\n"
     end
     booksStr
   end
@@ -81,13 +81,13 @@ class Book < StoreItem
       end
     end
     highestPricedBooks.each do |book|
-      booksStr += "#{book.title}, #{book.price}, #{book.authorName}, #{book.numberOfPages}, #{book.isbn}\n"
+      booksStr += "#{book.title},#{book.price},#{book.authorName},#{book.numberOfPages},#{book.isbn}\n"
     end
     booksStr
   end
 
   # Returns books within a certain price range as a string
-  def self.getItemsWithinRange(lowerPrice, upperPrice)
+  def self.getBooksWithinRange(lowerPrice, upperPrice)
     # Error Checking
     return 'Invalid input' if Float(lowerPrice, exception: false).nil? || Float(upperPrice, exception: false).nil?
 
@@ -99,7 +99,7 @@ class Book < StoreItem
     booksStr = "title, price, author name, number of pages, isbn\n"
     Book.readItemStore.each do |book|
       if book.price >= lowerPrice && book.price <= upperPrice
-        booksStr += "#{book.title}, #{book.price}, #{book.authorName}, #{book.numberOfPages}, #{book.isbn}\n"
+        booksStr += "#{book.title},#{book.price},#{book.authorName},#{book.numberOfPages},#{book.isbn}\n"
       end
     end
     booksStr
@@ -123,7 +123,7 @@ class Book < StoreItem
       books.each do |book|
         book.writeBookStore
       end
-      return 'Item deleted'
+      return "Book \"#{title}\" successfully deleted"
     end
     false
   end
